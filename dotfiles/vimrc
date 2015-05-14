@@ -1,0 +1,143 @@
+set nocompatible                               " Get rid of original Vi compatibility
+set lazyredraw                                 " Do not redraw screen while executing macro, commands
+set ttyfast                                    " Send more chars to the tty on redraw
+syntax sync minlines=256                       " Speed up syntax highlighting by limiting block height
+"set autoindent
+"set smartindent
+set tabstop=4                                  " Configure tab stop to 4 columns
+set shiftwidth=4                               " Configure Vim indentation
+set expandtab                                  " Expand tabs to spaces
+set smarttab                                   " Remove indent spaces with a single delete
+set backspace=indent,eol,start                 " Make backspace erase across lines
+set listchars=nbsp:•,tab:▸\ ,eol:¬             " Set tabstops and EOL as in Textmate
+set title                                      " Update xterm title with current edited file info
+set ignorecase                                 " Do case insensitive matching
+set incsearch                                  " Do incremetal search
+set hlsearch                                   " Highlight found pattern
+set nowrap                                     " Do not wrap long lines
+set scrolloff=2                                " Force 2 lines of Context above or below the cursor
+set showcmd                                    " Show (partial) command in status line.
+set showmatch                                  " Show matching brackets
+set nrformats="hex"                            " Recognize decimal and hex numbers, not octal
+set visualbell t_vb=                           " Disable visual bell
+
+set ruler                                      " Show status line with cursor position
+set laststatus=2
+set statusline=%<%F\ %h%m%r%=%-14.(%l,%c%V%)\ %P " Default statusline, but with full filepath, usefull with autochdir
+
+set autochdir                                  " chdir into the buffer filepath, usefull for tag file
+set tags=./tags;                               " Recursively search for tags files
+set noeol                                      " Don't add an empty line at the end of a file
+set wildmenu                                   " Complete with CTRL-N/P
+set wildmode=longest,list                      " Bash-style file completion
+
+set foldmethod=indent                          " fold based on indent
+set foldnestmax=10                             " deepest fold is 10 levels
+set nofoldenable                               " dont fold by default
+set foldlevel=1                                " 
+
+set ssop-=options                              " Don't save local options in sessions
+
+" Vundle
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/Vundle.vim'
+
+Plugin 'Shougo/vimproc.vim'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'coderifous/textobj-word-column.vim'
+Plugin 'ervandew/supertab'
+Plugin 'evanmiller/nginx-vim-syntax'
+Plugin 'fatih/vim-go'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'joonty/vdebug'
+Plugin 'jpalardy/vim-slime'
+Plugin 'kien/ctrlp.vim'
+Plugin 'msanders/snipmate.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'shawncplus/phpcomplete.vim'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-markdown'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-speeddating'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'vim-scripts/argtextobj.vim'
+Plugin 'vim-scripts/closetag.vim'
+Plugin 'vim-scripts/paredit.vim'
+
+call vundle#end()
+
+
+set t_Co=256                                   " Supports 256 colors
+set background=dark                            " Tell Vim to use a color scheme suitable for dark background
+colorscheme desert256v2
+hi WarningMsg ctermfg=15 ctermbg=Red guifg=White guibg=Red gui=NONE
+
+
+if has("autocmd")
+    syntax on
+    filetype plugin indent on
+
+    " Enable OmniCompletion
+    set ofu=syntaxcomplete#Complete
+
+    """ PHP settings
+    au FileType php setlocal cindent
+    au FileType php setlocal makeprg=php\ -l\ %
+    au FileType php setlocal errorformat=%m\ in\ %f\ on\ line\ %l
+    au FileType php setlocal kp=phpdoc
+    au FileType php setlocal omnifunc=phpcomplete#CompletePHP
+    " Open code-behind or frontend related file
+    au FileType php map <F4> :vs %:p:s,.inc$,.X123X,:s,.php$,.inc,:s,.X123X$,.php,<CR>
+
+    """ Python settings
+    au FileType python setlocal smartindent
+    " au FileType python setlocal makeprg=python\ -c\ \"import\ py_compile,sys;\ sys.stderr=sys.stdout;\ py_compile.compile(r'%')\"
+    " au FileType python setlocal efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m 
+    au FileType python compiler flake8
+
+    """ Varnish settings
+    au BufRead,BufNewFile *.vcl set filetype=vcl
+
+    """ MapServer config file
+    au BufNewFile,BufRead *.map set filetype=map
+end
+
+" MacVim options
+if has("gui_running")
+    set guioptions=-t
+endif
+
+""" Key mapping
+map <C-L> :noh<CR>:redraw!<CR>
+cmap W w
+" cmap Q q ## Interfer too much in command mode.
+cnoremap <C-a> <Home>
+cnoremap <C-e> <End>
+
+map <leader>st :SyntasticToggleMode<CR>
+map <leader>sc :SyntasticCheck<CR>:Errors<CR>
+map <leader>se :Errors<CR>
+map <leader>n :lne<CR>
+map <leader>p :lp<CR>
+
+" Unbind the cursor keys in insert, normal and visual modes.
+for prefix in ['i', 'n', 'v']
+    for key in ['<up>', '<down>', '<left>', '<right>']
+        exe prefix . "noremap " . key . " <nop>"
+    endfor
+endfor
+
+" Abbreviation
+abbrev resutl result
+abbrev reslut result
+abbrev importpdb import\ ipdb;\ ipdb.set_trace()
+
+
+" Plugins params
+let g:ctrlp_working_path_mode = 2                               " Search the first parent directory containing a SCM directory
+let g:SuperTabDefaultCompletionType = "<c-n>"                   " Autocomplete starting from the beginning of the list rather than the end
+let g:syntastic_php_phpmd_post_args = 'design,unusedcode'       " Disable cleancode and naming rulesets

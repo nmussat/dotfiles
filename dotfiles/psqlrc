@@ -1,0 +1,5 @@
+-- Default options for psql
+\x auto
+\timing
+\set HISTCONTROL ignoredups
+\set HISTSIZE 10000

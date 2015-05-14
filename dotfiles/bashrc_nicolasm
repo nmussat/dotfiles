@@ -1,0 +1,65 @@
+# nicolasm bash preferences
+
+export EDITOR=vim
+
+# don't put duplicate lines in the history. See bash(1) for more options
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+export HISTCONTROL=ignoreboth
+export HISTIGNORE="fg*"
+export HISTTIMEFORMAT="%Y-%m-%d %H:%M:%S"
+shopt -s histappend
+export PROMPT_COMMAND='history -a'
+
+export IGNOREEOF=1 # Prevent logout on the first CTRL-D
+set completion-prefix-display-length 2
+
+
+# Prompt
+function git_parse_branch {
+    git status -b --porcelain 2> /dev/null | awk 'NR==1{split($NF, name, /\./); printf "[" name[1]} NR==2{printf "*"; exit} END{if (name[1]) print "]"}'
+}
+
+if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]$(git_parse_branch)\$ '
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w$(git_parse_branch)\$ '
+fi
+
+
+# Binding and Aliases
+[[ -f ~/.bash_bindings ]] && source ~/.bash_bindings
+alias clearspaces="sed 's/[ \\t]*$//'"
+alias diff="colordiff -u"
+alias less='less -r'
+alias median='python -c "import sys; l = [int(i) for i in sys.stdin]; l = sorted(l); c = len(l); print l[c/2] if c % 2 else (l[c/2] + l[c/2-1]) / 2.0;"'
+alias tmux="tmux -2"
+alias vi='vim'
+alias wdiff='wdiff -w "$(tput bold;tput setaf 1)" -x "$(tput sgr0)" -y "$(tput bold;tput setaf 2)" -z "$(tput sgr0)"'
+
+
+# Python stuff
+export PYTHONSTARTUP=~/.pythonrc.py
+if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
+    export WORKON_HOME=$HOME/.virtualenvs
+    export VIRTUALENVWRAPPER_LOG_DIR="$WORKON_HOME"
+    export VIRTUALENVWRAPPER_HOOK_DIR="$WORKON_HOME"
+    source /usr/local/bin/virtualenvwrapper.sh
+    [[ -f ~/.virtualenv_current ]] && workon $(cat ~/.virtualenv_current)
+fi
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if [ -d $PYENV_ROOT ]; then 
+    eval "$(pyenv init -)"
+    # eval "$(pyenv virtualenv-init -)"
+fi
+
+
+# Environment
+export MA_INSTANCE=nicolasm
+export MA_ENV=dev
+
+export PGHOST=dev.meilleursagents.org
+export PGDATABASE=meilleursagents_dev
+export PGUSER=meilleursagents_dev

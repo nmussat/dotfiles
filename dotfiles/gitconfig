@@ -1,0 +1,15 @@
+[core]
+	excludesfile = ~/.gitignore
+[user]
+	name = Nicolas Mussat
+	email = nicolas@meilleursagents.com
+[push]
+	default = tracking
+[merge]
+	tool = vimdiff
+[help]
+	autocorrect = 1
+[rerere]
+	enabled = 0
+[alias]
+	pull-rebase = !git pull --rebase --summary

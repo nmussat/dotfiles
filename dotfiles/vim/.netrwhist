@@ -1,0 +1,7 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =5
+let g:netrw_dirhist_1='/Users/nicolasm/dotfiles.old'
+let g:netrw_dirhist_2='/Users/nicolasm/.dotfiles/dotfiles'
+let g:netrw_dirhist_3='/Users/nicolasm/.dotfiles/dotfiles/vim'
+let g:netrw_dirhist_4='/Users/nicolasm/.dotfiles/dotfiles/vim/bundle/vim-colorschemes/colors'
+let g:netrw_dirhist_5='/Users/nicolasm/.dotfiles/dotfiles/vim'
