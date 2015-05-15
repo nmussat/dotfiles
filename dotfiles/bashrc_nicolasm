@@ -1,6 +1,12 @@
 # nicolasm bash preferences
 
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export CLICOLOR=1
+
 export EDITOR=vim
+
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTSIZE=10000
@@ -27,12 +33,21 @@ else
 fi
 
 
+brew=$(which brew)
+if [ -e $brew ]; then
+    if [ -f $(brew --prefix)/etc/bash_completion ]; then
+        source $(brew --prefix)/etc/bash_completion
+    fi
+fi
+
+
 # Binding and Aliases
 [[ -f ~/.bash_bindings ]] && source ~/.bash_bindings
 alias clearspaces="sed 's/[ \\t]*$//'"
 alias diff="colordiff -u"
 alias less='less -r'
 alias median='python -c "import sys; l = [int(i) for i in sys.stdin]; l = sorted(l); c = len(l); print l[c/2] if c % 2 else (l[c/2] + l[c/2-1]) / 2.0;"'
+alias sbcl="rlwrap sbcl"
 alias tmux="tmux -2"
 alias vi='vim'
 alias wdiff='wdiff -w "$(tput bold;tput setaf 1)" -x "$(tput sgr0)" -y "$(tput bold;tput setaf 2)" -z "$(tput sgr0)"'
@@ -63,3 +78,6 @@ export MA_ENV=dev
 export PGHOST=dev.meilleursagents.org
 export PGDATABASE=meilleursagents_dev
 export PGUSER=meilleursagents_dev
+
+export GOPATH=~/Work/Go
+export PATH=$GOPATH/bin:$PATH:/usr/local/opt/go/libexec/bin
