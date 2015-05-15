@@ -17,7 +17,7 @@ set completion-prefix-display-length 2
 
 # Prompt
 function git_parse_branch {
-    git status -b --porcelain 2> /dev/null | awk 'NR==1{split($NF, name, /\./); printf "[" name[1]} NR==2{printf "*"; exit} END{if (name[1]) print "]"}'
+    git status -b --porcelain 2> /dev/null | awk 'NR==1{split($2, name, /\./); printf "[" name[1]} NR==2{printf "*"; exit} END{if (name[1]) print "]"}'
 }
 
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
