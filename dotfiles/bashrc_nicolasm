@@ -1,12 +1,15 @@
 # nicolasm bash preferences
 
+set -o vi
+
+export BASH_SILENCE_DEPRECATION_WARNING=1
+export CLICOLOR=1
+export EDITOR=nvim
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
-export CLICOLOR=1
 
-export EDITOR=vim
-
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=/usr/local/bin:/usr/local/sbin:$HOME/bin:$PATH
+export PATH=/usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin:$PATH
 
 # don't put duplicate lines in the history. See bash(1) for more options
 export HISTSIZE=10000
@@ -33,12 +36,7 @@ else
 fi
 
 
-brew=$(which brew)
-if [ -e $brew ]; then
-    if [ -f $(brew --prefix)/etc/bash_completion ]; then
-        source $(brew --prefix)/etc/bash_completion
-    fi
-fi
+export GREP_OPTIONS="--exclude-dir=__pycache__ --exclude-dir=node_modules"
 
 
 # Binding and Aliases
@@ -46,38 +44,59 @@ fi
 alias clearspaces="sed 's/[ \\t]*$//'"
 alias diff="colordiff -u"
 alias less='less -r'
-alias median='python -c "import sys; l = [int(i) for i in sys.stdin]; l = sorted(l); c = len(l); print l[c/2] if c % 2 else (l[c/2] + l[c/2-1]) / 2.0;"'
+alias median='python -c "import sys; l = [int(i) for l in sys.stdin for i in l.split()]; l = sorted(l); c = len(l); middle = int(c / 2); print(l[middle] if c % 2 else (l[middle] + l[middle + 1]) / 2);"'
 alias sbcl="rlwrap sbcl"
 alias tmux="tmux -2"
-alias vi='vim'
+alias vim='nvim'
+alias vi='nvim'
+alias vimdiff="nvim -d"
 alias wdiff='wdiff -w "$(tput bold;tput setaf 1)" -x "$(tput sgr0)" -y "$(tput bold;tput setaf 2)" -z "$(tput sgr0)"'
+alias tmux-reset="stty sane; printf '\033k%s\033\\\033]2;%s\007' "$(basename "$SHELL")" "$(uname -n)"; tput reset; tmux refresh"
 
 
 # Python stuff
 export PYTHONSTARTUP=~/.pythonrc.py
-if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
-    export WORKON_HOME=$HOME/.virtualenvs
-    export VIRTUALENVWRAPPER_LOG_DIR="$WORKON_HOME"
-    export VIRTUALENVWRAPPER_HOOK_DIR="$WORKON_HOME"
-    source /usr/local/bin/virtualenvwrapper.sh
-    [[ -f ~/.virtualenv_current ]] && workon $(cat ~/.virtualenv_current)
-fi
+# if [ -f /usr/local/bin/virtualenvwrapper.sh ]; then
+#     export WORKON_HOME=$HOME/.virtualenvs
+#     export VIRTUALENVWRAPPER_LOG_DIR="$WORKON_HOME"
+#     export VIRTUALENVWRAPPER_HOOK_DIR="$WORKON_HOME"
+#     source /usr/local/bin/virtualenvwrapper.sh
+#     [[ -f ~/.virtualenv_current ]] && workon $(cat ~/.virtualenv_current)
+# fi
 
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if [ -d $PYENV_ROOT ]; then 
-    eval "$(pyenv init -)"
-    # eval "$(pyenv virtualenv-init -)"
-fi
+export PYTHON_CONFIGURE_OPTS="--enable-framework"  # Needed by YouCompleteMe
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
 
 
-# Environment
-export MA_INSTANCE=nicolasm
-export MA_ENV=dev
-
-export PGHOST=dev.meilleursagents.org
-export PGDATABASE=meilleursagents_dev
-export PGUSER=meilleursagents_dev
-
+# Go stuff
 export GOPATH=~/Work/Go
-export PATH=$GOPATH/bin:$PATH:/usr/local/opt/go/libexec/bin
+export PATH=$GOPATH/bin:/usr/local/opt/go@1.8/bin:$PATH:/usr/local/opt/go/libexec/bin
+
+
+# Google Cloud
+export CLOUDSDK_PYTHON=/usr/bin/python
+if [ -f /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc ]; then
+    source /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/completion.bash.inc
+fi
+source <(kubectl completion bash)
+
+
+# Postgres Stuff
+export PGHOST=localhost
+export PGDATABASE=prose_dev
+
+
+# Brew stuff
+brew=$(which brew)
+if [ -e $brew ]; then
+    if [ -f $(brew --prefix)/etc/bash_completion ]; then
+        source $(brew --prefix)/etc/bash_completion
+    fi
+fi
+
+export SONAR_HOME=/usr/local/Cellar/sonar-scanner/4.4.0.2170/libexec
+export SONAR=$SONAR_HOME/bin
+export PATH=$SONAR:$PATH
+
+export PIP_EXTRA_INDEX_URL=https://prose:jyEYe6-xty36v@pypi.prose.com

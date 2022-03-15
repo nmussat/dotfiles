@@ -1,15 +1,23 @@
 [core]
 	excludesfile = ~/.gitignore
+	attributesfile = /Users/nicolasm/.gitattributes
 [user]
 	name = Nicolas Mussat
-	email = nicolas@meilleursagents.com
+	email = nicolas@prosehair.com
 [push]
 	default = tracking
 [merge]
-	tool = vimdiff
+	tool = nvim -d
 [help]
 	autocorrect = 1
 [rerere]
-	enabled = 0
+	enabled = 1
 [alias]
-	pull-rebase = !git pull --rebase --summary
+	pull-rebase = !git pull --rebase --stat
+	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
+	purr = !git pull --rebase --stat --autostash
+	merged-branches = "!currentBranch=$(git status --porcelain -b | awk  -F '[. ]' 'NR == 1 {print $2}') && git for-each-ref refs/heads/ '--format=%(refname:short)' | while read branch; do mergeBase=$(git merge-base $currentBranch $branch) && [[ $(git cherry $currentBranch $(git commit-tree $(git rev-parse $branch\\^{tree}) -p $mergeBase -m _)) == '-'* ]] && echo $branch; done"
+[diff "json"]
+	textconv = python -mjson.tool
+[init]
+	defaultBranch = main
