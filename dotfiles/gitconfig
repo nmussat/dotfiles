@@ -4,10 +4,11 @@
 [user]
 	name = Nicolas Mussat
 	email = nicolas@prosehair.com
+	signingkey = 7E384DC223288B6D
 [push]
 	default = tracking
 [merge]
-	tool = nvim -d
+	tool = nvimdiff
 [help]
 	autocorrect = 1
 [rerere]
@@ -17,7 +18,11 @@
 	change-commits = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f "
 	purr = !git pull --rebase --stat --autostash
 	merged-branches = "!currentBranch=$(git status --porcelain -b | awk  -F '[. ]' 'NR == 1 {print $2}') && git for-each-ref refs/heads/ '--format=%(refname:short)' | while read branch; do mergeBase=$(git merge-base $currentBranch $branch) && [[ $(git cherry $currentBranch $(git commit-tree $(git rev-parse $branch\\^{tree}) -p $mergeBase -m _)) == '-'* ]] && echo $branch; done"
-[diff "json"]
-	textconv = python -mjson.tool
+# [diff "json"]
+# 	textconv = python -mjson.tool
 [init]
 	defaultBranch = main
+[commit]
+	gpgsign = true
+[log]
+	mailmap = true
