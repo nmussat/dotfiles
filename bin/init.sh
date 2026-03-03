@@ -2,6 +2,8 @@
 
 set -eu
 
+bak_suffix=".bak.$(date +%Y%m%d%H%M%S)"
+
 [[ ! -d "$HOME/.config" ]] && mkdir -p "$HOME/.config"
 
 for source in config/*/; do
@@ -9,8 +11,9 @@ for source in config/*/; do
     [[ ! -d "$source" ]] && continue
     source="$(realpath "$source")"
     target="$HOME/.config/$(basename "$source")";
-    test -L "$target" && mv "$target"{,.bak}; # symlink
-    test -e "$target" && mv "$target"{,.bak}; # regular file or folder
+    if [[ -L "$target" || -e "$target" ]]; then
+        mv "$target" "$target$bak_suffix"
+    fi
     ln -s "$source" "$target";
 done;
 
@@ -19,7 +22,8 @@ for source in dotfiles/*; do
     # Process both files and folders from the dotfiles directory
     source="$(realpath "$source")"
     target="$HOME/$(basename "$source")";
-    test -L "$target" && mv "$target"{,.bak}; # symlink
-    test -e "$target" && mv "$target"{,.bak}; # regular file or folder
+    if [[ -L "$target" || -e "$target" ]]; then
+        mv "$target" "$target$bak_suffix"
+    fi
     ln -s "$source" "$target";
 done;
