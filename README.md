@@ -1,17 +1,30 @@
-# Dotfiles management
+# Dotfiles
 
-Backup/Reuse dotfiles from a git repo.
+Manage dotfiles by symlinking them from a Git repo into `$HOME`.
 
-- `config`: subfolders are symlinked in $HOME/.config/
-- `dotfiles`: files are directly symlinked into $HOME/
+## Structure
 
-Run `make init` to link files and folders.
-Existing target files are renamed, not overwritten.
+- `config/` — subfolders are symlinked into `$HOME/.config/`
+- `dotfiles/` — files are symlinked into `$HOME/` (prefixed with `.`)
 
-## TODO
+## Usage
 
-- Indempotency: re-running `make init` should check if target is already properly symlinked to prevent recreating a temporary file.
-- Backup will fail if the backup file already exists.
-- Should list performed actions at the end of the script
-- Eventually move from bash to higher level language (eg. python3?)
+```sh
+make init          # create symlinks
+make dry-run       # preview what init would do
+make clean         # remove managed symlinks and restore backups
+make clean-dry-run # preview what clean would do
+```
 
+## How it works
+
+- **Idempotent**: re-running `make init` skips targets that are already correctly linked.
+- **Safe backups**: existing files are renamed with a timestamped `.bak` suffix (e.g. `.gitconfig.20260303141500.bak`), so repeated runs never overwrite previous backups.
+- **Reversible**: `make clean` removes managed symlinks and restores the latest backup if one exists.
+- **Dry-run**: both `init` and `clean` support `--dry-run` to preview actions without touching the filesystem.
+
+## Getting started
+
+1. Clone this repo
+2. Add config folders to `config/` and dotfiles to `dotfiles/`
+3. Run `make dry-run` to preview, then `make init` to apply
