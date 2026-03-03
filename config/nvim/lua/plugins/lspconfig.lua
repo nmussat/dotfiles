@@ -24,7 +24,7 @@ return {
 
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-		mason_lspconfig.setup_handlers({
+		mason_lspconfig.setup({
 			function(server)
 				nvim_lsp[server].setup({
 					capabilities = capabilities,
@@ -66,8 +66,14 @@ return {
 					capabilities = capabilities,
 				})
 			end,
-			["pyright"] = function()
-				nvim_lsp["pyright"].setup({
+			["jedi_language_server"] = function()
+				nvim_lsp["jedi_language_server"].setup({
+					on_attach = on_attach,
+					capabilities = capabilities,
+				})
+			end,
+			["ruff"] = function()
+				nvim_lsp["ruff"].setup({
 					on_attach = on_attach,
 					capabilities = capabilities,
 				})

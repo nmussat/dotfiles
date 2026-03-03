@@ -15,7 +15,7 @@ return {
 				"gopls",
 				"html",
 				"jsonls",
-				"pyright",
+				"jedi_language_server",
 				"ts_ls",
 			},
 		})

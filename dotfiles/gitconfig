@@ -3,7 +3,7 @@
 	attributesfile = /Users/nicolasm/.gitattributes
 [user]
 	name = Nicolas Mussat
-	email = nicolas@prosehair.com
+	email = nicolas@diffuzed.com
 	signingkey = 7E384DC223288B6D
 [push]
 	default = tracking
@@ -26,3 +26,13 @@
 	gpgsign = true
 [log]
 	mailmap = true
+[gpg]
+	program = gpg
+[pull]
+	rebase = true
+
+[includeIf "hasconfig:remote.*.url:https://gitlab.prose.com/**"]
+    path = ~/.gitconfig-prose-gitlab
+
+[includeIf "hasconfig:remote.*.url:git@gitlab.prose.com:*/**"]
+    path = ~/.gitconfig-prose-gitlab

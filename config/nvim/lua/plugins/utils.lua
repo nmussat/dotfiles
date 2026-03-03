@@ -8,4 +8,5 @@ return {
 		event = "InsertEnter",
 		config = true,
 	},
+	{ "kien/ctrlp.vim" },
 }

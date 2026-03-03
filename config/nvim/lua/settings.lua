@@ -27,7 +27,6 @@ o.visualbell = false --  Disable visual bell
 o.ruler = true --  Show status line with cursor position
 o.laststatus = 2
 
-o.autochdir = true -- chdir into the buffer filepath, usefull for tag file
 o.eol = false -- Don't add an empty line at the end of a file
 o.wildmenu = true -- Complete with CTRL-N/P
 o.wildmode = "longest,list" -- Bash-style file completion
@@ -43,6 +42,7 @@ o.writebackup = false
 
 o.termguicolors = true
 
-vim.g.loaded_python_provider = 0 -- Disable python2
-vim.g.loaded_ruby_provider = 0 -- Disable ruby
+vim.g.loaded_python_provider = 0 -- Disable Python2
+vim.g.loaded_ruby_provider = 0 -- Disable Ruby
+vim.g.loaded_perl_provider = 0 -- Disable Perl
 vim.g.python3_host_prog = "/Users/nicolasm/.pyenv/versions/py-neovim/bin/python"
