@@ -11,6 +11,9 @@ for source in config/*/; do
     [[ ! -d "$source" ]] && continue
     source="$(realpath "$source")"
     target="$HOME/.config/$(basename "$source")";
+    if [[ "$(readlink "$target")" == "$source" ]]; then
+        continue
+    fi
     if [[ -L "$target" || -e "$target" ]]; then
         mv "$target" "$target$bak_suffix"
     fi
@@ -22,6 +25,9 @@ for source in dotfiles/*; do
     # Process both files and folders from the dotfiles directory
     source="$(realpath "$source")"
     target="$HOME/$(basename "$source")";
+    if [[ "$(readlink "$target")" == "$source" ]]; then
+        continue
+    fi
     if [[ -L "$target" || -e "$target" ]]; then
         mv "$target" "$target$bak_suffix"
     fi
