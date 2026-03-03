@@ -4,7 +4,10 @@ set -eu
 
 [[ ! -d "$HOME/.config" ]] && mkdir -p "$HOME/.config"
 
-for source in $(find config/ -maxdepth 1 -mindepth 1 -type d | xargs realpath); do
+for source in config/*/; do
+    # Only process directory from the config/ folder
+    [[ ! -d "$source" ]] && continue
+    source="$(realpath "$source")"
     target="$HOME/.config/$(basename "$source")";
     test -L "$target" && mv "$target"{,.bak}; # symlink
     test -e "$target" && mv "$target"{,.bak}; # regular file or folder
@@ -12,7 +15,9 @@ for source in $(find config/ -maxdepth 1 -mindepth 1 -type d | xargs realpath); 
 done;
 
 
-for source in $(find dotfiles/ -maxdepth 1 -mindepth 1 -type f | xargs realpath); do
+for source in dotfiles/*; do
+    # Process both files and folders from the dotfiles directory
+    source="$(realpath "$source")"
     target="$HOME/$(basename "$source")";
     test -L "$target" && mv "$target"{,.bak}; # symlink
     test -e "$target" && mv "$target"{,.bak}; # regular file or folder
